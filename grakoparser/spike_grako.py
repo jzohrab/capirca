@@ -5,7 +5,7 @@ import grako
 from parse_acl_base import ACLParser
 from parse_acl_base import ACLSemantics
 
-from policy import Header, Term
+from lib.policy import Header, Term
 import sys
 
 
@@ -55,7 +55,7 @@ def load_policy(data):
 def try_parse(parser, s):
     print '--------------------'
     print 'FILE: ' + s
-    with open('../test/characterization_data/policies/{0}'.format(s), 'r') as f:
+    with open('test/characterization_data/policies/{0}'.format(s), 'r') as f:
         data = f.read()
     d = parser.parse(data, rule_name='START')
     print d
@@ -97,8 +97,7 @@ sample_multitarget.pol
 sample_nsxv.pol
 sample_packetfilter.pol
 sample_speedway.pol
-sample_srx.pol
-test_pyparsing_spike.pol"""
+sample_srx.pol"""
     for f in files.split('\n'):
         try_parse(parser, f)
 
