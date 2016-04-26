@@ -1,0 +1,259 @@
+(*
+ * Grako grammar for ACLs.
+ *)
+
+@@comments :: /\s*#.*/
+@@whitespace :: /[\t ]+/
+
+START
+    =
+    eol { header eol terms eol }+ $
+    ;
+
+delim
+    =
+    '::'
+    ;
+
+openbracket
+    =
+    '{'
+    ;
+
+closebracket
+    =
+    '}'
+    ;
+
+header
+    =
+    'header' openbracket eol attributes:header_spec closebracket eol
+    ;
+
+eol
+    =
+    /(\r?\n|\r)*/
+    ;
+
+header_spec
+    =
+    { (target_spec | comment_spec | eol ) }+
+    ;
+
+target_spec
+    =
+    'target' delim { string | integer }+
+    ;
+
+comment_spec
+    =
+    'comment' delim comment:dblquotedstring
+    ;
+
+dblquotedstring
+    =
+    /"[^"].*?"/
+    ;
+
+integer
+    =
+    /\d+/
+    ;
+
+string
+    =
+    ?/\w+([-_+.@/]\w*)*/?
+    ;
+
+terms
+    =
+    { term }+
+    ;
+
+term
+    =
+    'term' name:string openbracket eol attributes+:{ termattributes }+ closebracket eol
+    ;
+
+termattributes
+    =
+    { term_spec | eol }+
+    ;
+
+term_spec
+    =
+      action_spec
+    | addr_spec
+    | comment_spec
+    | counter_spec
+    | ether_type_spec
+    | exclude_spec
+    | expiration_spec
+    | fragment_offset_spec
+    | icmp_type_spec
+    | interface_spec
+    | logging_spec
+    | losspriority_spec
+    | option_spec
+    | owner_spec
+    | packet_length_spec
+    | platform_spec
+    | policer_spec
+    | port_spec
+    | precedence_spec
+    | principals_spec
+    | prefix_list_spec
+    | protocol_spec
+    | qos_spec
+    | routinginstance_spec
+    | tag_list_spec
+    | timeout_spec
+    | traffic_type_spec
+    | verbatim_spec
+    ;
+
+routinginstance_spec
+    =
+    'routing-instance' delim string
+    ;
+
+losspriority_spec
+    =
+     'loss-priority' delim string
+    ;
+
+precedence_spec
+    =
+    'precedence' delim { integer }+
+    ;
+
+icmp_type_spec
+    =
+    'icmp-type' delim { string }+
+    ;
+
+packet_length_spec
+    =
+    'packet-length' delim ( (integer '-' integer) | integer )
+    ;
+
+fragment_offset_spec
+    =
+    'fragment-offset' delim ( integer '-' integer | integer )
+    ;
+
+exclude_spec
+    =
+      'source-exclude' delim { string }+
+    | 'destination-exclude' delim { string }+
+    | 'address-exclude' delim { string }+
+    | 'protocol-except' delim { string }+
+    ;
+
+prefix_list_spec
+    =
+      'destination-prefix' delim { string }+
+    | 'source-prefix' delim { string }+
+    ;
+
+addr_spec
+    =
+      'source-address' delim { string }+
+    | 'destination-address' delim { string }+
+    | 'address'  delim { string }+
+    ;
+
+port_spec
+    =
+      ('source-port' delim { string }+ )
+    | ('destination-port' delim { string }+ )
+    | ('port' delim { string }+ )
+    ;
+
+protocol_spec
+    =
+    'protocol' delim { string | integer }+
+    ;
+
+tag_list_spec
+    =
+      'destination-tag' delim { string }+
+    | 'source-tag' delim { string }+
+    ;
+
+ether_type_spec
+    =
+    'ether-type' delim { string }+
+    ;
+
+traffic_type_spec
+    =
+    'traffic-type' delim { string }+
+    ;
+
+policer_spec
+    =
+    'policer' delim string
+    ;
+
+logging_spec
+    =
+    'logging' delim string
+    ;
+
+option_spec
+    =
+    'option' delim { string }+
+    ;
+
+principals_spec
+    =
+    'principals' delim { string }+
+    ;
+
+action_spec
+    =
+    'action' delim string
+    ;
+
+counter_spec
+    =
+    'counter' delim string
+    ;
+
+expiration_spec
+    =
+    'expiration' delim integer '-' integer '-' integer
+    ;
+
+owner_spec
+    =
+    'owner' delim string
+    ;
+
+verbatim_spec
+    =
+    'verbatim' delim string dblquotedstring
+    ;
+
+qos_spec
+    =
+    'QOS' delim string
+    ;
+
+interface_spec
+    =
+      'source-interface' delim string
+    | 'destination-interface' delim string
+    ;
+
+platform_spec
+    =
+      'platform' delim { string }+
+    | 'platform-exclude' delim { string }+
+    ;
+
+timeout_spec
+    =
+    'timeout' delim integer
+    ;
